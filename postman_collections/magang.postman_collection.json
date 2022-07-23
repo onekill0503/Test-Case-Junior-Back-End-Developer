@@ -1,0 +1,337 @@
+{
+	"info": {
+		"_postman_id": "bca8a7f3-b4fb-464f-b6d5-9298d199c35c",
+		"name": "magang",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11943942"
+	},
+	"item": [
+		{
+			"name": "Add Categories",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "category_name",
+							"value": "Ada,aja",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "category",
+							"value": "4",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "Halo Halo Bandung 5",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "500000",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": [
+								"/C:/Users/User/Pictures/Untitled-2.png",
+								"/C:/Users/User/Pictures/W.png"
+							]
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add Product Assets",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "8",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": "/C:/Users/User/Desktop/Desktop/airdrop/1440.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Edit Products",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "8",
+							"type": "text"
+						},
+						{
+							"key": "name",
+							"value": "gak tau dah",
+							"type": "text"
+						},
+						{
+							"key": "category",
+							"value": "2",
+							"type": "text"
+						},
+						{
+							"key": "price",
+							"value": "5000",
+							"type": "text"
+						},
+						{
+							"key": "deleted_asset",
+							"value": "16,17",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": "/C:/Users/User/Desktop/Desktop/airdrop/dbx.png"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/edit_product",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"edit_product"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Products",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "sorted",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Categories",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "sorted",
+							"value": "true",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/categories?sorted=true",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"categories"
+					],
+					"query": [
+						{
+							"key": "sorted",
+							"value": "true"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Product Assets",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "asset_id",
+							"value": "8",
+							"type": "text"
+						},
+						{
+							"key": "images",
+							"type": "file",
+							"src": [],
+							"disabled": true
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/assets",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"assets"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Products",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "product_id",
+							"value": "13",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/products",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"products"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete Categories",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "categories_id",
+							"value": "12,13",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:3333/categories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3333",
+					"path": [
+						"categories"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

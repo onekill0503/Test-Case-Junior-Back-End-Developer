@@ -47,7 +47,7 @@ const addAssetsFunction = async (files , product_id) => {
 module.exports = {
     getCategories: async (req , res) => {
         try {
-            if(req.query.sorted && req.query.sorted == 'true'){
+            if(req.body.sorted && (req.body.sorted == 'true' || req.body.sorted == true)){
                 // get All Categories with sorted results
                 var Categories = await models.Categories.findAll({
                     include: ["products"] ,
@@ -72,10 +72,89 @@ module.exports = {
             })
         }
     },
+    addCategories: async (req , res) => {
+        try {
+            // create validation schema
+            const schema = joi.object({
+                category_name: joi.string().min(3).required()
+            })
+            // Validate Data
+            const data = schema.validate(req.body);
+            if(data.error) throw data.error;
+            // make the string into array
+            var categories = data.value.category_name.split(',')
+            // find if the category exists
+            const checkCategory = await models.Categories.findAll({raw: true,where: {name: categories}})
+            var http_response = {}
+            if(checkCategory.length > 0){
+                var exist_category = []
+                checkCategory.map(v => {
+                    categories.splice(categories.indexOf(v.name) , 1)
+                    exist_category.push(v.name)
+                })
+                http_response.optional_info = `Category : ${exist_category.join(',')} already exists in our records.`
+            }
+            // check if there's unexist category
+            if(categories.length > 0) {
+                const structured_category = categories.map(v => {return {name: v}})
+                await models.Categories.bulkCreate(structured_category) 
+                http_response.message = `Successfully adding : ${categories.join(',')} Category`
+            }else {
+                http_response.message = `No category recorded to our server`
+            }
+
+            // create response object
+            http_response.success = true;
+
+            return res.status(200).json(http_response)
+
+        }catch(error){
+            return res.status(500).json({
+                message: error.message,
+                success: false,
+                http_code: 500
+            })
+        }
+    },
+    deleteCategories: async (req , res) =>{
+        try {
+            // create validation schema
+            const schema = joi.object({categories_id: joi.string().min(1).required()})
+            // Validate Data
+            const data = schema.validate(req.body);
+            if(data.error) throw data.error;
+            
+            // make it array
+            const listCategories = data.value.categories_id.split(',')
+
+            // check the category
+            const categories = await models.Categories.findAll({raw:true , where: {id: listCategories}})
+            if(categories.length > 0){
+                var newList = categories.map(v => v.id)
+
+                // Delete Records
+                await models.Categories.destroy({where: {id: newList}})
+            }else {
+                return res.status(404).json({success: false , message: `Categories Record not found.`})
+            }
+
+            // giving reponse
+            return res.status(200).json({
+                success: true,
+                message: `Successfully Deleted Category`
+            })
+        }catch(error){
+            return res.status(500).json({
+                message: error.message,
+                success: false,
+                http_code: 500
+            })
+        }
+    },
     getProducts: async (req , res) => {
         try {
             
-            if(req.query.sorted || req.query.sorted == 'true'){
+            if(req.body.sorted && (req.body.sorted == 'true' || req.body.sorted == true)){
                 // get All Products with DESC sort and assets
                 var products = await models.Products.findAll({order: [['price' , 'DESC']] , include: ["assets"]});
             } else {
@@ -226,9 +305,6 @@ module.exports = {
                     assetImage.push(e.dataValues.image)
                 })
             })
-
-            console.log(assetId)
-            console.log(assetImage)
 
             // Delete records
             await models.Products_assets.destroy({where: {id: assetId}})
