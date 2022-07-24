@@ -20,6 +20,20 @@ gunakan perintah berikut untuk melakukan migration
 npx sequelize-cli db:migrate
 ```
 
+### Running Server
+Masuk ke root directory lalu masukan perintah berikut untuk menjalankan server
+```
+npm start
+```
+
+### Unit Testing
+untuk melakukan test fungsional bisa jalankan perintah berikut
+```
+npm test
+```
+
+agar tidak terjadi error tambahkan setidaknya 1 records di tabel category secara manual agar testing fungsional product tidak gagal.
+
 ## API
 
 ### Add Category `/categories PUT`

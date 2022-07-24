@@ -55,7 +55,7 @@ module.exports = {
                 })
             }else {
                 // get All Categories without sorted result
-                var Categories = await models.Categories.findAll({include: ['products']})
+                var Categories = await models.Categories.findAll({include: ['products'], order: [['id','ASC']]})
             }
 
             // give response
@@ -119,13 +119,16 @@ module.exports = {
     deleteCategories: async (req , res) =>{
         try {
             // create validation schema
-            const schema = joi.object({categories_id: joi.string().min(1).required()})
+            const schema = joi.alternatives({
+                categories_id: joi.alternatives(joi.string().min(1).required() , joi.number().min(1).required())
+            })
+            // const schema = joi.object({categories_id: joi.string().min(1).required()})
             // Validate Data
             const data = schema.validate(req.body);
             if(data.error) throw data.error;
             
             // make it array
-            const listCategories = data.value.categories_id.split(',')
+            const listCategories = data.value.categories_id.toString().split(',')
 
             // check the category
             const categories = await models.Categories.findAll({raw:true , where: {id: listCategories}})
@@ -159,7 +162,7 @@ module.exports = {
                 var products = await models.Products.findAll({order: [['price' , 'DESC']] , include: ["assets"]});
             } else {
                 // get all products without DESC sort
-                var products = await models.Products.findAll({include: ["assets"]});
+                var products = await models.Products.findAll({include: ["assets"], order: [['id','ASC']]});
             }
 
             return res.status(200).json({
@@ -176,6 +179,7 @@ module.exports = {
     },
     addProduct: async (req , res) => {
         try {
+            
             // Create Validation Schema
             schema = joi.object({
                 category: joi.number().required(),
@@ -185,6 +189,10 @@ module.exports = {
             // Validate Data
             const data = schema.validate(req.body);
             if(data.error) throw data.error;
+
+            // check if category exist
+            const category_check = await models.Categories.findOne({where: {id: data.value.category}})
+            if(!category_check) throw new Error(`Category with ID ${data.value.category} not found`)
 
             // membuat slug
             const slug = data.value.name.split(' ').join('-')
@@ -220,11 +228,11 @@ module.exports = {
         try {
             // Create validation schema
             const schema = joi.object({
-                product_id: joi.string().required(),
+                product_id: joi.number().required(),
                 name: joi.string().min(3).required(),
                 category: joi.string().required(),
                 price: joi.number().min(3).required(),
-                deleted_asset: joi.string().optional()
+                deleted_asset: joi.alternatives(joi.string().min(1).optional() , joi.number().min(1).optional())
             })
 
             // Validate Data
@@ -271,15 +279,16 @@ module.exports = {
     deleteProduct: async (req , res) => {
         try {
             // Create validation schema
-            const schema = joi.object({
-                product_id: joi.string().required()
+            console.log(req.body)
+            const schema = joi.alternatives({
+                product_id: joi.alternatives(joi.string().min(1).required() , joi.number().min(1).required())
             })
             // Validating Data
             const data = schema.validate(req.body);
             if(data.error) throw data.error;
 
             // make id into array
-            idList = data.value.product_id.split(",")
+            idList = data.value.product_id.toString().split(",")
 
             // Check if the product exist
             const products = await models.Products.findAll({where: {id: idList}, include: ["assets"]})
@@ -290,7 +299,7 @@ module.exports = {
                 // get the missing asset id
                 filtered = idList.filter(val => {return idListRecorded.indexOf(val) == -1})
 
-                return res.status(200).json({
+                return res.status(404).json({
                     success: false,
                     message: `Products with id ${filtered.join(',')} not found`
                 })
@@ -334,8 +343,9 @@ module.exports = {
             const schema = joi.object({
                 product_id: joi.number().required()
             })
+            console.log(req.files.length)
             // Check if there's images uploaded
-            if(req.files || req.files > 0){
+            if(req.files.length > 0){
 
                 // Validating Data
                 const data = schema.validate(req.body);
@@ -346,13 +356,15 @@ module.exports = {
                     return {product_id: data.value.product_id , image: v.filename}
                 })
                 await models.Products_assets.bulkCreate(listFile)
-            }else throw "No image uploaded."
-
-            // server response
-            res.status(200).json({
-                success: true,
-                http_code: 200,
-            })
+                
+                // server response
+                return res.status(200).json({
+                    success: true,
+                    http_code: 200,
+                })
+            }else {
+                throw new Error("No image uploaded.")
+            }
         }catch(error){
             return res.status(500).json({
                 message: error.message,
@@ -363,16 +375,16 @@ module.exports = {
     },
     deleteAssets: async function(req , res) {
         try{
-            // create data validation schema
-            const schema = joi.object({
-                asset_id: joi.string().required()
+            // Create validation schema
+            const schema = joi.alternatives({
+                asset_id: joi.alternatives(joi.string().min(1).required() , joi.number().min(1).required())
             })
             // Validating Data
             const data = schema.validate(req.body);
             if(data.error) throw data.error;
 
             // running delete asset function
-            await deleteAssetFunction(data.value.asset_id)
+            await deleteAssetFunction(data.value.asset_id.toString())
 
             return res.status(200).json({
                 success: true,
