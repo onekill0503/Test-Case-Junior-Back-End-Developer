@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "npx jest --detectOpenHandles",
+    "test": "npx jest --detectOpenHandles --verbose",
     "start": "nodemon index.js"
   },
   "keywords": [],
