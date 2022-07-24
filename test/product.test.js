@@ -58,14 +58,6 @@ describe(`Deleting Last Inserted Product` , function() {
         const response = await request.delete(`/products`).send({product_id: 1233445})
         expect(response.status).toBe(404)
     })
-    test(`Delete Second and Third Product` , async () => {
-        // get product id
-        const product = await request.get(`/products`).send()
-        const product_input2 = product.body.data[product.body.data.length-2].id
-        const product_input3 = product.body.data[product.body.data.length-1].id
-        const response = await request.delete(`/products`).send({product_id: `${product_input2},${product_input3}`})
-        expect(response.status).toBe(200)
-    })
     test(`Delete Product with 1 wrong ID` , async () => {
         // get product id
         const product = await request.get(`/products`).send()
@@ -73,5 +65,13 @@ describe(`Deleting Last Inserted Product` , function() {
         const product_input3 = product.body.data[product.body.data.length-1].id
         const response = await request.delete(`/products`).send({product_id: `${product_input2},${product_input3},238778`})
         expect(response.status).toBe(404)
+    })
+    test(`Delete Second and Third Product` , async () => {
+        // get product id
+        const product = await request.get(`/products`).send()
+        const product_input2 = product.body.data[product.body.data.length-2].id
+        const product_input3 = product.body.data[product.body.data.length-1].id
+        const response = await request.delete(`/products`).send({product_id: `${product_input2},${product_input3}`})
+        expect(response.status).toBe(200)
     })
 })
