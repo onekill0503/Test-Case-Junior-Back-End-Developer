@@ -72,7 +72,7 @@ Key | Deskripsi | Note | Tipe Data
 ### Edit Products `/edit_product PUT`
 Key | Deskripsi | Note | Tipe Data
 --- | --- | --- | ---
-`product_id` | id produk yang diedit / diubah | required | `string`
+`product_id` | id produk yang diedit / diubah | required | `number`
 `category` | id kategori | required | `string`
 `name` | nama produk | required | `string`
 `price` | harga produk | required | `integer`
